@@ -9,6 +9,5 @@ class Product extends Model
 {
     use HasFactory;
 
-    // Tambahkan ini supaya bisa simpan data lewat form
     protected $fillable = ['nama_produk', 'harga'];
 }
