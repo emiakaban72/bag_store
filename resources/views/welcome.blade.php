@@ -2,77 +2,67 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>CRUD Bag Store</title>
-    <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; background-color: #f8f9fa; }
-        .form-box { margin-bottom: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        table { border-collapse: collapse; width: 80%; max-width: 800px; background: white; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
-        th { background-color: #f4f4f4; }
-        /* Ganti baris 11 sampai 12 dengan ini */
-.btn-edit, .btn-delete { 
-    background-color: #28a745; 
-    color: white; 
-    padding: 8px 15px; 
-    text-decoration: none; 
-    font-weight: bold; 
-    border-radius: 4px; 
-    border: none;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 14px;
-}
-
-.btn-edit:hover, .btn-delete:hover {
-    background-color: #218838; 
-}
-        input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        button[type="submit"] { padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bag Store Management</title>
+    @vite(['resources/css/app.css'])
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>Data Tas</h1>
+        </div>
 
-    <h2>Daftar Produk Tas</h2>
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #eee;">
+            <h3>Tambah Produk Baru</h3>
+            <form action="{{ route('produk.store') }}" method="POST" style="display: flex; gap: 10px; align-items: flex-end;">
+                @csrf
+                <div style="flex: 1;">
+                    <label style="display:block; margin-bottom:5px;">Nama Produk</label>
+                    <input type="text" name="nama_produk" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="flex: 1;">
+                    <label style="display:block; margin-bottom:5px;">Harga</label>
+                    <input type="number" name="harga" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="height: 40px;">Simpan</button>
+            </form>
+        </div>
 
-    <div class="form-box">
-        <form action="{{ route('produk.store') }}" method="POST">
-            @csrf
-            <input type="text" name="nama_produk" placeholder="Nama Produk" required>
-            <input type="number" name="harga" placeholder="Harga" required>
-            <button type="submit">Tambah Produk</button>
-        </form>
-    </div>
+        @if(session('success'))
+            <div style="padding: 10px; background: #d4edda; color: #155724; border-radius: 4px; margin-bottom: 20px;">
+                {{ session('success') }}
+            </div>
+        @endif
 
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Produk</th>
-                <th>Harga</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($products as $key => $item)
-            <tr>
-                <td>{{ $key + 1 }}</td>
-                <td>{{ $item->nama_produk }}</td>
-                <td>Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                <td>
-                    <div style="display: flex; justify-content: center; gap: 10px;">
-                        <a href="{{ route('produk.edit', $item->id) }}" class="btn-edit">Edit</a>
-                        
-                        <form action="{{ route('produk.destroy', $item->id) }}" method="POST">
+        <table class="table-produk">
+            <thead>
+                <tr>
+                    <th>Nama Produk</th>
+                    <th>Harga</th>
+                    <th style="text-align: center;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($products as $product)
+                <tr>
+                    <td>{{ $product->nama_produk }}</td>
+                    <td>Rp{{ number_format($product->harga, 0, ',', '.') }}</td>
+                    <td style="text-align: center;">
+                        <a href="{{ route('produk.edit', $product->id) }}" class="btn btn-warning">Edit</a>
+                        <form action="{{ route('produk.delete', $product->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn-delete" onclick="return confirm('Yakin hapus?')">Hapus</button>
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Yakin hapus?')">Hapus</button>
                         </form>
-                    </div>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="3" style="text-align: center; padding: 20px; color: #888;">Belum ada data produk.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
