@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bag Store Management</title>
     @vite(['resources/css/app.css'])
+
+    <style>
+    .table-produk {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .table-produk th, 
+    .table-produk td {
+        border: 1px solid black;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .table-produk th {
+        background-color: #f2f2f2;
+    }
+</style>
 </head>
 <body>
     <div class="container">
